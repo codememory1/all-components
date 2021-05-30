@@ -1,0 +1,8 @@
+http:
+  session:
+    typeSave: file
+    redis:
+      handlerNamespace: Codememory\HttpFoundation\Client\Session\Storages\RedisStorage
+    file:
+      handlerNamespace: Codememory\HttpFoundation\Client\Session\Storages\FileStorage
+      pathSave: storage/sessions/
