@@ -4,6 +4,7 @@ namespace Codememory\Routing;
 
 use Closure;
 use Codememory\Routing\Interfaces\ParametersInterface;
+use Codememory\Routing\Interfaces\PathGeneratorInterface;
 use Codememory\Routing\Interfaces\RouteResourcesInterface;
 use JetBrains\PhpStorm\Pure;
 
@@ -17,9 +18,9 @@ class RouteResources implements RouteResourcesInterface
 {
 
     /**
-     * @var string
+     * @var PathGenerator
      */
-    private string $path;
+    private PathGenerator $path;
 
     /**
      * @var Closure|string
@@ -44,13 +45,13 @@ class RouteResources implements RouteResourcesInterface
     /**
      * RouteResources constructor.
      *
-     * @param string          $routePath
+     * @param PathGenerator   $routePath
      * @param callable|string $routeAction
      * @param array           $routeHeaders
      * @param string|null     $routeNamePrefix
      * @param array           $routeSoftware
      */
-    public function __construct(string $routePath, callable|string $routeAction, array $routeHeaders, ?string $routeNamePrefix, array $routeSoftware)
+    public function __construct(PathGenerator $routePath, callable|string $routeAction, array $routeHeaders, ?string $routeNamePrefix, array $routeSoftware)
     {
 
         $this->path = $routePath;
@@ -64,7 +65,7 @@ class RouteResources implements RouteResourcesInterface
     /**
      * @inheritDoc
      */
-    public function getPath(): string
+    #[Pure] public function getPathGenerator(): PathGeneratorInterface
     {
 
         return $this->path;
@@ -118,11 +119,10 @@ class RouteResources implements RouteResourcesInterface
     /**
      * @inheritDoc
      */
-    #[Pure]
-    public function getParameters(): ParametersInterface
+    public function getInputParameters(): ParametersInterface
     {
 
-        return new Parameters($this->getPath());
+        return new InputParameters($this->getPathGenerator()->getPath());
 
     }
 

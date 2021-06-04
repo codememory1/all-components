@@ -1,0 +1,18 @@
+httpStatus:
+  _general:
+    priority: view
+    engine: big
+    class: App\Errors\HttpStatus
+
+  404:
+    view: notFound
+  500:
+    view: serverError
+  403:
+    priority: class
+    class: App\Error\Forbidden
+    method: forbidden
+  405:
+    priority: view
+    engine: twig
+    view: 405

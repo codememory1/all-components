@@ -27,10 +27,17 @@ interface RouteInterface
     public function name(string $name): RouteInterface;
 
     /**
-     * @param string $namespaceSoftware
+     * @param array $software
      *
      * @return RouteInterface
      */
-    public function software(string $namespaceSoftware): RouteInterface;
+    public function software(array $software): RouteInterface;
+
+    /**
+     * @param array $schemes
+     *
+     * @return RouteInterface
+     */
+    public function scheme(array $schemes): RouteInterface;
 
 }

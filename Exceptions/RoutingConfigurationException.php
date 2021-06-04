@@ -2,15 +2,13 @@
 
 namespace Codememory\Routing\Exceptions;
 
-use ErrorException;
-
 /**
- * Class RoutingException
+ * Class RoutingConfigurationException
  * @package Codememory\Routing\Exceptions
  *
  * @author  Codememory
  */
-abstract class RoutingException extends ErrorException
+abstract class RoutingConfigurationException extends RoutingException
 {
 
 }

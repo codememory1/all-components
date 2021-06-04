@@ -1,0 +1,22 @@
+routing:
+  _settings:
+    pathWithRoutes: App/Routing/Routes/
+    softwareNamespace: Codememory\Routing\App\Routing\Software
+    routesFileSuffix: null
+
+  _routes:
+    test:
+      path: 'Router/test/:id/:name'
+      method: 'GET'
+      class:
+        controller: Codememory\Routing\App\Controllers\TestController
+        method: main
+      parameters:
+        id: '\d+'
+        name: '[a-zA-Z]+'
+      software:
+        Auth: api
+        CheckIp: api
+      schemes:
+        - http
+        - https

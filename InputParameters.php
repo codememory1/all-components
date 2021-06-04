@@ -5,12 +5,12 @@ namespace Codememory\Routing;
 use Codememory\Routing\Interfaces\ParametersInterface;
 
 /**
- * Class Parameters
+ * Class InputParameters
  * @package Codememory\Routing
  *
  * @author  Codememory
  */
-class Parameters implements ParametersInterface
+class InputParameters implements ParametersInterface
 {
 
     public const DEFAULT_PARAMETER_REGEX = '.*';
@@ -23,7 +23,7 @@ class Parameters implements ParametersInterface
     private string $routePath;
 
     /**
-     * Parameters constructor.
+     * InputParameters constructor.
      *
      * @param string $routePath
      */
@@ -40,7 +40,7 @@ class Parameters implements ParametersInterface
     public function all(): array
     {
 
-        $regex = sprintf('/\%s(?<parameters>%s)/', self::PARAMETER_START_CHARACTER, self::PARAMETER_NAME_REGEX);
+        $regex = sprintf('/\%s(?<parameters>%s)(?:\/|$)/', self::PARAMETER_START_CHARACTER, self::PARAMETER_NAME_REGEX);
 
         preg_match_all($regex, $this->routePath, $match);
 
@@ -54,13 +54,7 @@ class Parameters implements ParametersInterface
     public function getFirstParameter(): ?string
     {
 
-        if ([] !== $this->all()) {
-            $firstKey = array_key_first($this->all());
-
-            return $this->all()[$firstKey];
-        }
-
-        return null;
+        return $this->all()[array_key_first($this->all())] ?? null;
 
     }
 
@@ -70,13 +64,7 @@ class Parameters implements ParametersInterface
     public function getLastParameter(): ?string
     {
 
-        if ([] !== $this->all()) {
-            $lastKey = array_key_last($this->all());
-
-            return $this->all()[$lastKey];
-        }
-
-        return null;
+        return $this->all()[array_key_last($this->all())] ?? null;
 
     }
 

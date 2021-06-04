@@ -7,6 +7,7 @@ use Codememory\Routing\Interfaces\RouterInterface;
 use Codememory\Routing\Traits\ConstructStaticTrait;
 use Codememory\Support\Str;
 use JetBrains\PhpStorm\Pure;
+use RuntimeException;
 
 /**
  * Class Router
@@ -20,6 +21,11 @@ class Router implements RouterInterface
     private const INPUT_NAME_WITH_METHOD = '_method';
 
     use ConstructStaticTrait;
+
+    /**
+     * @var bool
+     */
+    private static bool $initRoutesFromConfig = false;
 
     /**
      * @var array
@@ -40,6 +46,59 @@ class Router implements RouterInterface
      * @var array
      */
     private static array $software = [];
+
+    /**
+     * @var bool
+     */
+    private static bool $statusRouteFound = false;
+
+    /**
+     * @return Router
+     * @throws Exceptions\ConstructorNotInitializedException
+     * @throws Exceptions\IncorrectControllerException
+     * @throws Exceptions\InvalidControllerMethodException
+     */
+    public static function initializingRoutesFromConfig(): Router
+    {
+
+        self::checkConstructorInitialization();
+
+        if (self::$initRoutesFromConfig) {
+            throw new RuntimeException('Cannot call "initializingRoutesFromConfig" method more than once');
+        }
+
+        self::$initRoutesFromConfig = true;
+
+        $routes = self::$utils->getRoutes();
+
+        foreach ($routes as $routeName => $routeData) {
+            $method = Str::toLowercase($routeData['method']);
+            $action = $routeData['class']['controller'] . '#' . $routeData['class']['method'];
+            $software = [];
+
+            $route = self::$method($routeData['path'], $action)->name($routeName);
+
+            foreach ($routeData['parameters'] as $parameterName => $regex) {
+                $route->with($parameterName, $regex);
+            }
+
+            foreach ($routeData['software'] as $softwareClassName => $softwareMethod) {
+                $software[] = $softwareClassName . Software::DELIMITER_CHAR_METHOD_NAME . $softwareMethod;
+            }
+
+            if ([] !== $software) {
+                $route->software($software);
+            }
+
+            if ([] !== $routeData['schemes']) {
+                $route->scheme($routeData['schemes']);
+            }
+
+        }
+
+        return new self();
+
+    }
 
     /**
      * @inheritDoc
@@ -117,11 +176,13 @@ class Router implements RouterInterface
     public static function softwareGroup(array $software, callable $callback): RouterInterface
     {
 
+        $previousSoftware = self::$software;
+
         self::$software = array_merge(self::$software, $software);
 
         call_user_func($callback);
 
-        self::$software = [];
+        self::$software = $previousSoftware;
 
         return new self();
 
@@ -170,6 +231,14 @@ class Router implements RouterInterface
 
         self::checkConstructorInitialization();
 
+        self::iterationRoutes(function (Route $route) {
+            self::$statusRouteFound = $route->checkValidityRoute(self::$utils);
+        });
+
+        if (!self::$statusRouteFound) {
+            self::$response->setResponseCode(404)->sendHeaders();
+        }
+
     }
 
     /**
@@ -188,6 +257,22 @@ class Router implements RouterInterface
     }
 
     /**
+     * @param callable $handler
+     */
+    private static function iterationRoutes(callable $handler): void
+    {
+
+        foreach (self::$routes[self::getRequestMethod()] ?? [] as $route) {
+            call_user_func($handler, $route);
+
+            if (self::$statusRouteFound) {
+                break;
+            }
+        }
+
+    }
+
+    /**
      * @param string          $path
      * @param array           $methods
      * @param callable|string $action
@@ -199,15 +284,14 @@ class Router implements RouterInterface
     {
 
         $methods = array_map(fn (string $method) => Str::toUppercase($method), $methods);
-        $route = new Route(self::$request, self::$response, new RouteResources(
-            self::collectAndGetRoutePath($path),
-            $action,
-            $headers,
-            self::$routeNamePrefix,
-            self::$software,
-        ));
+
+        $pathGenerator = new PathGenerator(self::collectAndGetRoutePath($path));
+        $resources = new RouteResources($pathGenerator, $action, $headers, self::$routeNamePrefix, self::$software);
+        $route = new Route(self::$request, self::$response, $resources);
 
         foreach ($methods as $method) {
+            $route->setMethod($method);
+
             self::$routes[$method][] = $route;
         }
 
@@ -225,11 +309,13 @@ class Router implements RouterInterface
     private static function prefixHandler(string $prefix, callable $callback, string $propertyForPrefix): RouterInterface
     {
 
+        $valuePropertyForPrefix = self::$$propertyForPrefix;
+
         self::$$propertyForPrefix .= $prefix;
 
         call_user_func($callback);
 
-        self::$$propertyForPrefix = null;
+        self::$$propertyForPrefix = $valuePropertyForPrefix;
 
         return new self();
 
@@ -253,6 +339,29 @@ class Router implements RouterInterface
         }
 
         return $requestMethod;
+
+    }
+
+    /**
+     * @return Router
+     */
+    private static function scanningAndImportFilesWithRoutes(): Router
+    {
+
+        $pathWithRoutes = trim(self::$utils->getBasicSettings()['pathWithRoutes'], '/');
+        $routesFileSuffix = self::$utils->getBasicSettings()['routesFileSuffix'];
+
+        if (self::$filesystem->exist($pathWithRoutes)) {
+            $filesOfPathWithRoutes = self::$filesystem->scanning($pathWithRoutes);
+
+            foreach ($filesOfPathWithRoutes as $fileOfPathWithRoutes) {
+                if (Str::ends($fileOfPathWithRoutes, sprintf('%s.php', $routesFileSuffix))) {
+                    self::$filesystem->singleImport($pathWithRoutes . '/' . $fileOfPathWithRoutes);
+                }
+            }
+        }
+
+        return new self();
 
     }
 

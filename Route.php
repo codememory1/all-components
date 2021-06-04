@@ -4,8 +4,10 @@ namespace Codememory\Routing;
 
 use Codememory\HttpFoundation\Interfaces\RequestInterface;
 use Codememory\HttpFoundation\Interfaces\ResponseInterface;
+use Codememory\Routing\Action\ActionHandler;
 use Codememory\Routing\Interfaces\RouteInterface;
 use Codememory\Routing\Interfaces\RouteResourcesInterface;
+use Codememory\Routing\Traits\RouteVerificationTrait;
 
 /**
  * Class Route
@@ -15,6 +17,8 @@ use Codememory\Routing\Interfaces\RouteResourcesInterface;
  */
 class Route implements RouteInterface
 {
+
+    use RouteVerificationTrait;
 
     /**
      * @var RequestInterface
@@ -42,6 +46,26 @@ class Route implements RouteInterface
     private ?string $name = null;
 
     /**
+     * @var array
+     */
+    private array $software = [];
+
+    /**
+     * @var array|string[]
+     */
+    private array $schemes = ['http', 'https'];
+
+    /**
+     * @var string|null
+     */
+    private ?string $method = null;
+
+    /**
+     * @var ?bool
+     */
+    private ?bool $statusVerifyRoute = null;
+
+    /**
      * Route constructor.
      *
      * @param RequestInterface        $request
@@ -63,7 +87,7 @@ class Route implements RouteInterface
     public function with(string $parameterName, string $regex = null): RouteInterface
     {
 
-        $this->with[$parameterName] = $regex ?: Parameters::DEFAULT_PARAMETER_REGEX;
+        $this->with[$parameterName] = $regex ?: InputParameters::DEFAULT_PARAMETER_REGEX;
 
         return $this;
 
@@ -82,14 +106,137 @@ class Route implements RouteInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function software(array $software): RouteInterface
+    {
+
+        $this->software = array_merge($this->software, $software);
+
+        return $this;
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function scheme(array $schemes): RouteInterface
+    {
+
+        $this->schemes = $schemes;
+
+        return $this;
+
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return $this
+     */
+    public function setMethod(string $method): Route
+    {
+
+        $this->method = $method;
+
+        return $this;
+
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+
+        return $this->method;
+
+    }
+
+    /**
      * @return string|null
      */
     public function getName(): ?string
     {
 
-        return $this->resources->getNamePrefix().$this->name;
+        return $this->resources->getNamePrefix() . $this->name;
 
     }
 
+    /**
+     * @return array
+     */
+    public function getRequiredParameters(): array
+    {
+
+        return $this->with;
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getSoftware(): array
+    {
+
+        return array_merge($this->software, $this->resources->getSoftware());
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getSchemes(): array
+    {
+
+        return $this->schemes;
+
+    }
+
+    /**
+     * @return OutputParameters
+     */
+    public function getOutputParameters(): OutputParameters
+    {
+
+        return new OutputParameters($this->resources->getPathGenerator(), $this->request->url, $this->getRequiredParameters());
+
+    }
+
+    /**
+     * @return RouteResourcesInterface
+     */
+    public function getResources(): RouteResourcesInterface
+    {
+
+        return $this->resources;
+
+    }
+
+    /**
+     * @param Utils $utils
+     *
+     * @return bool
+     */
+    public function checkValidityRoute(Utils $utils): bool
+    {
+
+        $routePathRegex = $this->resources->getPathGenerator()->getRegexPath($this->getRequiredParameters());
+
+        $this
+            ->verifyByRoutePathRegex($routePathRegex)
+            ->verifyProtocol()
+            ->verifyHeaders()
+            ->verifySoftware($utils);
+
+        if ($this->statusVerifyRoute) {
+            $action = new ActionHandler($this->getOutputParameters(), $this->resources);
+
+            $action->performAction();
+        }
+
+        return $this->statusVerifyRoute;
+
+    }
 
 }

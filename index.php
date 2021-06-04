@@ -15,32 +15,14 @@ ini_set('display_errors', 1);
 
 use Codememory\Routing\Router;
 use Codememory\HttpFoundation\Request\Request;
-use Codememory\Routing\RoutePath;
+use Codememory\HttpFoundation\ControlHttpStatus\ControlResponseCode;
 
 require_once 'vendor/autoload.php';
 
-$request = new Request();
-$parameters = new RoutePath('Router/:id/:name');
-
-try {
-    Router::__constructStatic($request);
+$c = new ControlResponseCode(new \Codememory\HttpFoundation\Response\Response(new \Codememory\HttpFoundation\Client\Header\Header()));
 
 
-
-    Router::get('Router/:id/:name', 'App.Controller.MainController#main')->name('main1');
-    Router::nameGroup('admin.', function () {
-       Router::nameGroup('users.', function () {
-           Router::get('Router/:id/:name', 'App.Controller.MainController#main2')->name('main2');
-       });
-
-       Router::post('Router/:id/:name', 'App.Controller.MainController#main3')->name('main3');
-    });
-    Router::get('Router/:id/:name', 'App.Controller.MainController#main')->name('main4');
-
-    foreach (Router::allRoutes() as $route) {
-        echo $route->getName().'<br>';
-    }
-    
-} catch (ErrorException $e) {
-    die($e->getMessage());
-}
+Router::__constructStatic(new Request());
+Router::initializingRoutesFromConfig();
+Router::processAllRoutes();
+$c->trackResponseStatus();

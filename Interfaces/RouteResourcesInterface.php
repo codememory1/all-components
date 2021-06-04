@@ -2,6 +2,8 @@
 
 namespace Codememory\Routing\Interfaces;
 
+use Codememory\Routing\PathGenerator;
+
 /**
  * Interface RouteResourcesInterface
  * @package Codememory\Routing\Interfaces
@@ -12,9 +14,9 @@ interface RouteResourcesInterface
 {
 
     /**
-     * @return string
+     * @return PathGenerator
      */
-    public function getPath(): string;
+    public function getPathGenerator(): PathGeneratorInterface;
 
     /**
      * @return callable|string
@@ -39,6 +41,6 @@ interface RouteResourcesInterface
     /**
      * @return ParametersInterface
      */
-    public function getParameters(): ParametersInterface;
+    public function getInputParameters(): ParametersInterface;
 
 }
