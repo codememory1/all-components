@@ -12,6 +12,11 @@ interface SoftwareLieHandlerInterface
 {
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * The method accepts a callback in which some software action
+     * can be performed if it returns false
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param callable $callback
      *
      * @return bool

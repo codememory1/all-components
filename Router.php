@@ -223,6 +223,28 @@ class Router implements RouterInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public static function getRouteByName(string $name): Route|bool
+    {
+
+        if (self::routeExist($name)) {
+            foreach (self::allRoutes() as $route) {
+                if ($route->getName() === $name) {
+                    return $route;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * A method that iterates over all created routes, verifies each route
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @return void
      * @throws Exceptions\ConstructorNotInitializedException
      */
@@ -242,6 +264,10 @@ class Router implements RouterInterface
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Returns the correct assembled route path given the group prefix
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param string $routePath
      *
      * @return string
@@ -257,6 +283,10 @@ class Router implements RouterInterface
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Iterate over arrays of all created routes and call callback - handler
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param callable $handler
      */
     private static function iterationRoutes(callable $handler): void
@@ -273,6 +303,11 @@ class Router implements RouterInterface
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * The route picker that runs when the route is created. In this method,
+     * the created object of the created route is added to the array
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param string          $path
      * @param array           $methods
      * @param callable|string $action
@@ -300,6 +335,10 @@ class Router implements RouterInterface
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Handler for adding and removing a prefix to any property
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param string   $prefix
      * @param callable $callback
      * @param string   $propertyForPrefix
@@ -343,6 +382,12 @@ class Router implements RouterInterface
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Returns the current request method, if the request method POST method will check the
+     * name of the method that is specified in the form input with the name "_method"
+     * if this input exists, this particular request method will be returned
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @return Router
      */
     private static function scanningAndImportFilesWithRoutes(): Router

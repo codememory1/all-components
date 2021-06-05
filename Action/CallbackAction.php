@@ -4,7 +4,6 @@ namespace Codememory\Routing\Action;
 
 use Codememory\Container\DependencyInjection\Interfaces\DependencyInjectionInterface;
 use Codememory\Container\DependencyInjection\Interfaces\InjectionInterface;
-use Codememory\Support\Str;
 use Exception;
 
 /**

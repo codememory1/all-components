@@ -5,12 +5,12 @@ namespace Codememory\Routing\Controller;
 use Codememory\Container\ServiceProvider\Interfaces\ServiceProviderInterface;
 
 /**
- * Class ControllerAbstract
+ * Class AbstractController
  * @package Codememory\Routing\Controller
  *
  * @author  Codememory
  */
-abstract class ControllerAbstract
+abstract class AbstractController
 {
 
     /**
@@ -19,7 +19,7 @@ abstract class ControllerAbstract
     private ServiceProviderInterface $serviceProvider;
 
     /**
-     * ControllerAbstract constructor.
+     * AbstractController constructor.
      *
      * @param ServiceProviderInterface $serviceProvider
      */

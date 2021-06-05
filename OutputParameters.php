@@ -7,6 +7,11 @@ use Codememory\Routing\Interfaces\ParametersInterface;
 use Codememory\Routing\Interfaces\PathGeneratorInterface;
 
 /**
+ * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+ * Using this class, you can get the values of the route
+ * parameters that are specified in the url address
+ * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+ *
  * Class OutputParameters
  * @package Codememory\Routing
  *

@@ -52,9 +52,7 @@ class ControllerAction extends ActionAbstract
     }
 
     /**
-     * @param DependencyInjectionInterface $dependencyInjection
-     *
-     * @return mixed
+     * @inheritDoc
      * @throws ConfigNotFoundException
      * @throws EnvironmentVariableNotFoundException
      * @throws IncorrectPathToEnviException

@@ -5,18 +5,21 @@ namespace Codememory\Routing\App\Routing\Software;
 use Codememory\Routing\SoftwareAbstract;
 
 /**
- * Class Auth
+ * Class Test
  * @package Codememory\Routing\App\Routing\Software
  *
- * @author Codememory
+ * @author  Codememory
  */
-class Auth extends SoftwareAbstract
+class Test extends SoftwareAbstract
 {
 
-    public function api(): bool
+    /**
+     * @return bool
+     */
+    public function service(): bool
     {
-
-        return true;
+        
+	    return true;
 
     }
 

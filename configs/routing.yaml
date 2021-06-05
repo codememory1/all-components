@@ -1,7 +1,7 @@
 routing:
   _settings:
     pathWithRoutes: App/Routing/Routes/
-    softwareNamespace: Codememory\Routing\App\Routing\Software
+    softwareNamespace: Codememory\Routing\App\Routing\Software\
     routesFileSuffix: null
 
   _routes:

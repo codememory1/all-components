@@ -2,6 +2,8 @@
 
 namespace Codememory\Routing\Interfaces;
 
+use Codememory\Routing\Route;
+
 /**
  * Interface RouterInterface
  * @package Codememory\Routing\Interfaces
@@ -135,5 +137,17 @@ interface RouterInterface
      * @return array
      */
     public static function allRoutes(): array;
+
+    /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Returns an object of a specific route by name, if the route
+     * does not exist, it will return false
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
+     * @param string $name
+     *
+     * @return Route|bool
+     */
+    public static function getRouteByName(string $name): Route|bool;
 
 }

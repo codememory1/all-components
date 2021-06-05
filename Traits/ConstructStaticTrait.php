@@ -51,6 +51,11 @@ trait ConstructStaticTrait
     private static Utils $utils;
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * A static constructor that must be called before using any
+     * routing methods and must only be called once
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param RequestInterface $request
      *
      * @throws SingleConstructorInitializationException
@@ -77,6 +82,10 @@ trait ConstructStaticTrait
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Check if a static constructor has been initialized
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @throws ConstructorNotInitializedException
      */
     private static function checkConstructorInitialization(): void
@@ -89,6 +98,10 @@ trait ConstructStaticTrait
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Check re-invocation of static constructor
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @throws SingleConstructorInitializationException
      */
     private static function checkSingleConstructorInitialization(): void

@@ -43,6 +43,10 @@ class ActionHandler
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Returns route actions handlers based on conditions
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @return mixed
      */
     public function performAction(): mixed
@@ -59,6 +63,10 @@ class ActionHandler
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Calls and returns the result of any route action handler
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param DependencyInjectionInterface $dependencyInjection
      * @param ActionAbstract               $action
      *

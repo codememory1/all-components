@@ -27,6 +27,10 @@ abstract class ActionAbstract
     protected ?OutputParameters $outputParameters = null;
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>
+     * Set route action
+     * <=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param mixed $action
      *
      * @return ActionAbstract
@@ -41,6 +45,11 @@ abstract class ActionAbstract
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Set the OutputParameters object this object is responsible for returning
+     * parameter values when opening a route in a browser
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param OutputParameters $outputParameters
      *
      * @return $this
@@ -55,6 +64,10 @@ abstract class ActionAbstract
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Collect and get the route action indicator for the DI container
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param string|null $name
      *
      * @return string
@@ -68,6 +81,10 @@ abstract class ActionAbstract
     }
 
     /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * In this method, the action of the route itself is processed
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param DependencyInjectionInterface $dependencyInjection
      *
      * @return mixed

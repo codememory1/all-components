@@ -8,7 +8,6 @@ use Codememory\Routing\Router;
 use Codememory\Support\Arr;
 use Codememory\Support\Str;
 use Exception;
-use Generator;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,7 +66,6 @@ class RouteListCommand extends Command
 
         $inputMethods = $input->getOption('method');
         $methods = $inputMethods ? explode(',', $input->getOption('method')) : [];
-        $methods = ([] === $methods) ? ['get', 'post'] : $methods;
         $methods = array_map(fn (mixed $method) => Str::toUppercase($method), $methods);
         $routeDataArray = $this->getRouteDataArray(Router::allRoutes(), $methods);
         $markedRoutes = $this->getMarkedRouteData($routeDataArray);
@@ -142,9 +140,11 @@ class RouteListCommand extends Command
             ];
         }
 
-        foreach ($routeDataArray as $index => $routeData) {
-            if (!in_array($routeData['method'], $methods)) {
-                unset($routeDataArray[$index]);
+        if([] !== $methods) {
+            foreach ($routeDataArray as $index => $routeData) {
+                if (!in_array($routeData['method'], $methods)) {
+                    unset($routeDataArray[$index]);
+                }
             }
         }
 
@@ -206,12 +206,12 @@ class RouteListCommand extends Command
         $numberRoutes = (int) $input->getOption('number');
         $numberRoutes = $numberRoutes < 1 ? 1 : $numberRoutes;
         $totalRoutes = count($markedRoutes);
-        $totalPages = round($totalRoutes / $numberRoutes);
+        $totalPages = ceil($totalRoutes / $numberRoutes);
         $openedPage = $this->getOpenedPage($input, $totalPages);
         $from = ($openedPage - 1) * $numberRoutes;
-        $before = $from + $numberRoutes;
+        $before = $from + $numberRoutes - 1;
 
-        for ($i = $before; $i < $from; $i++) {
+        for ($i = $from < 0 ? 0 : $from; $i <= $before; $i++) {
             if (array_key_exists($i, $markedRoutes)) {
                 $routeDataForTable[] = $markedRoutes[$i];
             }
@@ -232,7 +232,7 @@ class RouteListCommand extends Command
 
         $openedPage = (int) $input->getOption('page');
 
-        if ($openedPage < $totalPages) {
+        if ($openedPage < 1) {
             $openedPage = 1;
         }
 

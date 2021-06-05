@@ -2,7 +2,6 @@
 
 namespace Codememory\Routing;
 
-use Codememory\Routing\Interfaces\ParametersInterface;
 use Codememory\Routing\Interfaces\PathGeneratorInterface;
 use Codememory\Support\Str;
 
@@ -57,6 +56,29 @@ class PathGenerator implements PathGeneratorInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function generate(array $parameters = []): string
+    {
+
+        $path = $this->routePath;
+
+        foreach ($parameters as $name => $value) {
+            Str::replace($path, sprintf('%s%s', InputParameters::PARAMETER_START_CHARACTER, $name), $value);
+        }
+
+        return $path;
+
+    }
+
+    /**
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Generates the route path - escapes characters in the route that may affect
+     * the regex, strip the parameter names from the path and substitute the
+     * parameter's regular expression instead of them and return the full
+     * path based on the regex
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
+     *
      * @param array $requiredParameters
      *
      * @return string
@@ -78,12 +100,15 @@ class PathGenerator implements PathGeneratorInterface
     }
 
     /**
-     * @param ParametersInterface $routeParameters
-     * @param array               $requiredParameters
+     * =>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>=>
+     * Processes all parameters of the route, if no rule has been created for
+     * this parameter, the default rule ". *" Will be assigned to this parameter.
+     * <=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=<=
      *
-     * @return void
+     * @param InputParameters $routeParameters
+     * @param array           $requiredParameters
      */
-    private function checkRouteParametersInRequired(ParametersInterface $routeParameters, array &$requiredParameters): void
+    private function checkRouteParametersInRequired(InputParameters $routeParameters, array &$requiredParameters): void
     {
 
         foreach ($routeParameters->all() as $parameterName) {
